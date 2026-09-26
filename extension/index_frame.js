@@ -28,7 +28,10 @@ function init() {
   let gemini_app;
   let mistral_app;
   let poe_app;
+  let google_ai_mode_app;
   let perplexity_app;
+  let meta_ai_app;
+  let liner_app;
   let cohere_app;
   let app;
   let init_already = false;
@@ -311,6 +314,48 @@ function init() {
       });
     }
 
+    // Detect Google AI Mode
+    const isGoogleSearchOrAIMode = window.location.hostname.includes("google.") &&
+      (new URLSearchParams(window.location.search).get("udm") === "50" ||
+       window.location.pathname.startsWith("/aim") ||
+       window.location.href.includes("google.com/aim"));
+
+    if (isGoogleSearchOrAIMode || (window.location.hostname.includes("google.") && document.querySelector(P.google_ai_mode.detection))) {
+      console.log("Google AI Mode detected");
+      let aimElmFound = false;
+      setTimeout(() => {
+        if (!aimElmFound) {
+          console.warn("[ShareLM] URL matches Google AI Mode but expected DOM element was not found.");
+        }
+      }, 15000);
+
+      waitForElm(P.google_ai_mode.detection).then((aim_app) => {
+        aimElmFound = true;
+        if (aim_app) {
+          google_ai_mode_app = aim_app;
+          app = document.body;
+          shouldShare = true;
+
+          if (!init_already) {
+            init_already = true;
+            getUserInfoFromStorage();
+            handleDataUpdatesFromPopup();
+          }
+
+          getFromStorage("age_verified").then((age_verified_from_storage) => {
+            age_verified = age_verified_from_storage ?? false;
+            if (!age_verified) {
+              addNeedVerificationBadge();
+            } else {
+              addBadge();
+            }
+            setInterval(queryAndUpdateConversationsGoogleAIMode, 7000);
+            setInterval(addBadge, 5000);
+          });
+        }
+      });
+    }
+
     if (window.location.href.includes(P.perplexity.url_pattern)) {
       console.log("Perplexity website detected");
       perplexity_app = document.body;
@@ -332,6 +377,58 @@ function init() {
           addBadge();
         }
         setInterval(queryAndUpdateConversationsPerplexity, 7000);
+        setInterval(addBadge, 5000);
+      });
+    }
+
+    // Detect Meta AI
+    if (window.location.href.includes(P.meta_ai.url_pattern)) {
+      console.log("Meta AI website detected");
+      meta_ai_app = document.body;
+      app = meta_ai_app;
+      shouldShare = true;
+
+      if (!init_already) {
+        init_already = true;
+        getUserInfoFromStorage();
+        handleDataUpdatesFromPopup();
+      }
+
+      getFromStorage("age_verified").then((age_verified_from_storage) => {
+        age_verified = age_verified_from_storage ?? false;
+        if (!age_verified) {
+          console.log("age not verified - adding need verification badge");
+          addNeedVerificationBadge();
+        } else {
+          addBadge();
+        }
+        setInterval(queryAndUpdateConversationsMetaAI, 7000);
+        setInterval(addBadge, 5000);
+      });
+    }
+
+    // Detect Liner
+    if (window.location.href.includes(P.liner.url_pattern) || (P.liner.url_pattern_alt && window.location.href.includes(P.liner.url_pattern_alt))) {
+      console.log("Liner website detected");
+      liner_app = document.body;
+      app = liner_app;
+      shouldShare = true;
+
+      if (!init_already) {
+        init_already = true;
+        getUserInfoFromStorage();
+        handleDataUpdatesFromPopup();
+      }
+
+      getFromStorage("age_verified").then((age_verified_from_storage) => {
+        age_verified = age_verified_from_storage ?? false;
+        if (!age_verified) {
+          console.log("age not verified - adding need verification badge");
+          addNeedVerificationBadge();
+        } else {
+          addBadge();
+        }
+        setInterval(queryAndUpdateConversationsLiner, 7000);
         setInterval(addBadge, 5000);
       });
     }
@@ -1155,11 +1252,35 @@ function init() {
     );
   }
 
+  function queryAndUpdateConversationsGoogleAIMode() {
+    queryAndUpdateConversations(
+        P.google_ai_mode.user_msg,
+        P.google_ai_mode.bot_msg,
+        sub_user_selector="",sub_bot_selector="", model="google_ai_mode"
+    );
+  }
+
   function queryAndUpdateConversationsPerplexity() {
     queryAndUpdateConversations(
         P.perplexity.user_msg,
         P.perplexity.bot_msg,
         sub_user_selector="",sub_bot_selector="", model="perplexity"
+    );
+  }
+
+  function queryAndUpdateConversationsMetaAI() {
+    queryAndUpdateConversations(
+        P.meta_ai.user_msg,
+        P.meta_ai.bot_msg,
+        sub_user_selector="",sub_bot_selector="", model="meta_ai"
+    );
+  }
+
+  function queryAndUpdateConversationsLiner() {
+    queryAndUpdateConversations(
+        P.liner.user_msg,
+        P.liner.bot_msg,
+        sub_user_selector="",sub_bot_selector="", model="liner"
     );
   }
   

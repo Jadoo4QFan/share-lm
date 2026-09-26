@@ -82,16 +82,38 @@ var SHARELM_SELECTORS = {
     poe: {
       name: "Poe",
       url_pattern: "poe.com",
-      detection: null,
-      user_msg: ".Prose_presets_theme-on-accent__rESxX",
-      bot_msg: ".Prose_presets_theme-hi-contrast__LQyM9"
+      detection: "textarea, [class*=\"GrowingTextArea_textArea\"], [class*=\"ChatMessageInputContainer\"], [class*=\"ChatPageMain\"]",
+      user_msg: "[class*=\"Message_humanMessageBubble\"], [class*=\"Message_userMessageBubble\"], [class*=\"humanMessage\"], .Prose_presets_theme-on-accent__rESxX",
+      bot_msg: "[class*=\"Message_botMessageBubble\"], [class*=\"botMessage\"], [class*=\"Markdown_markdownContainer\"], .Prose_presets_theme-hi-contrast__LQyM9"
+    },
+    google_ai_mode: {
+      name: "Google AI Mode",
+      url_pattern: "google.",
+      detection: "div[data-xid=\"aim-mars-turn-root\"], div[data-xid=\"aim-mars-input-plate\"]",
+      user_msg: "div[data-xid=\"aim-mars-turn-root\"] span[jsname=\"y5v2y\"], div[data-xid=\"aim-mars-turn-root\"] .sUKAcb, [data-scope-id=\"turn\"] [data-xid*=\"user\"]",
+      bot_msg: "div[data-xid=\"aim-mars-turn-root\"] [data-scope-id=\"turn\"] [data-subtree=\"aimc\"], div[data-xid=\"aim-mars-turn-root\"] [data-subtree=\"aimc\"]"
     },
     perplexity: {
       name: "Perplexity",
       url_pattern: "perplexity.ai",
       detection: null,
-      user_msg: ".font-display.text-pretty",
-      bot_msg: "div.prose"
+      user_msg: ".group\\/user-bubble, .group\\/query, .whitespace-pre-line, .font-display.text-pretty, span.block > span.block",
+      bot_msg: "div[id^=\"markdown-content-\"], div.prose"
+    },
+    meta_ai: {
+      name: "Meta AI",
+      url_pattern: "meta.ai",
+      detection: "[data-testid=\"composer-input\"], [data-testid=\"assistant-message\"]",
+      user_msg: "[data-message-type=\"user\"], [data-message-id$=\"_user\"], div[class*=\"whitespace-pre-wrap\"]",
+      bot_msg: "[data-testid=\"assistant-message\"], [data-message-id$=\"_assistant\"]"
+    },
+    liner: {
+      name: "Liner",
+      url_pattern: "liner.com",
+      url_pattern_alt: "getliner.com",
+      detection: "textarea, [role=\"textbox\"], [contenteditable=\"true\"], input[type=\"text\"]",
+      user_msg: "h1, [data-message-type=\"user\"], [data-role=\"user\"], .user-message, div[class*=\"user-message\"], div[class*=\"userMessage\"], div[class*=\"UserMessage\"]",
+      bot_msg: "[data-message-type=\"assistant\"], [data-role=\"assistant\"], .bot-message, .assistant-message, div[class*=\"bot-message\"], div[class*=\"assistantMessage\"], div[class*=\"BotMessage\"], .prose, div.markdown-main-panel, div[class*=\"markdown\"]"
     },
     cohere: {
       name: "Cohere",
