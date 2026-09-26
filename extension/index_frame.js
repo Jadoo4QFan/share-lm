@@ -315,8 +315,12 @@ function init() {
     }
 
     // Detect Google AI Mode
-    if (window.location.hostname.includes("google.") &&
-        (window.location.search.includes("udm=50") || window.location.href.includes("/aim") || document.querySelector(P.google_ai_mode.detection))) {
+    const isGoogleSearchOrAIMode = window.location.hostname.includes("google.") &&
+      (new URLSearchParams(window.location.search).get("udm") === "50" ||
+       window.location.pathname.startsWith("/aim") ||
+       window.location.href.includes("google.com/aim"));
+
+    if (isGoogleSearchOrAIMode || (window.location.hostname.includes("google.") && document.querySelector(P.google_ai_mode.detection))) {
       console.log("Google AI Mode detected");
       let aimElmFound = false;
       setTimeout(() => {
@@ -329,7 +333,7 @@ function init() {
         aimElmFound = true;
         if (aim_app) {
           google_ai_mode_app = aim_app;
-          app = google_ai_mode_app;
+          app = document.body;
           shouldShare = true;
 
           if (!init_already) {

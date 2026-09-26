@@ -82,9 +82,9 @@ var SHARELM_SELECTORS = {
     poe: {
       name: "Poe",
       url_pattern: "poe.com",
-      detection: null,
-      user_msg: "div[class*=\"Message_userMessageBubble\"], .Prose_presets_theme-on-accent__rESxX",
-      bot_msg: "div[class*=\"Message_botMessageBubble\"], .Prose_presets_theme-hi-contrast__LQyM9"
+      detection: "textarea, [class*=\"GrowingTextArea_textArea\"], [class*=\"ChatMessageInputContainer\"], [class*=\"ChatPageMain\"]",
+      user_msg: "[class*=\"Message_humanMessageBubble\"], [class*=\"Message_userMessageBubble\"], [class*=\"humanMessage\"], .Prose_presets_theme-on-accent__rESxX",
+      bot_msg: "[class*=\"Message_botMessageBubble\"], [class*=\"botMessage\"], [class*=\"Markdown_markdownContainer\"], .Prose_presets_theme-hi-contrast__LQyM9"
     },
     google_ai_mode: {
       name: "Google AI Mode",
@@ -111,9 +111,9 @@ var SHARELM_SELECTORS = {
       name: "Liner",
       url_pattern: "liner.com",
       url_pattern_alt: "getliner.com",
-      detection: "textarea, [role=\"textbox\"]",
-      user_msg: "[data-message-type=\"user\"], [data-role=\"user\"], .user-message, div[class*=\"user-message\"], div[class*=\"userMessage\"]",
-      bot_msg: "[data-message-type=\"assistant\"], [data-role=\"assistant\"], .bot-message, .assistant-message, div[class*=\"bot-message\"], div[class*=\"assistantMessage\"], .prose, div.markdown-main-panel"
+      detection: "textarea, [role=\"textbox\"], [contenteditable=\"true\"], input[type=\"text\"]",
+      user_msg: "h1, [data-message-type=\"user\"], [data-role=\"user\"], .user-message, div[class*=\"user-message\"], div[class*=\"userMessage\"], div[class*=\"UserMessage\"]",
+      bot_msg: "[data-message-type=\"assistant\"], [data-role=\"assistant\"], .bot-message, .assistant-message, div[class*=\"bot-message\"], div[class*=\"assistantMessage\"], div[class*=\"BotMessage\"], .prose, div.markdown-main-panel, div[class*=\"markdown\"]"
     },
     cohere: {
       name: "Cohere",
