@@ -1253,9 +1253,50 @@ function init() {
   }
 
   function queryAndUpdateConversationsGoogleAIMode() {
+    if (!shouldShare || !age_verified) {
+      console.log("Sharing is disabled, not updating conversation");
+      return;
+    }
+
+    // Iterate over turn containers individually - querying user headings across
+    // the whole document caused the first question to repeat across all turns.
+    const turnContainers = document.querySelectorAll(P.google_ai_mode.turn_container);
+    if (turnContainers && turnContainers.length > 0) {
+      const new_user_msgs = [];
+      const new_bot_msgs = [];
+      for (let i = 0; i < turnContainers.length; i++) {
+        const turn = turnContainers[i];
+        // User question - first match inside this turn only
+        const user_elm = turn.querySelector(P.google_ai_mode.user_msg);
+        // Model response - may match nested containers, keep only top-level ones
+        const bot_elms = turn.querySelectorAll(P.google_ai_mode.bot_msg);
+        if (!user_elm || bot_elms.length === 0) {
+          // Turn without a question or without a response yet (still streaming) - skip,
+          // it will be picked up on the next poll
+          continue;
+        }
+        const top_level_bot_elms = Array.from(bot_elms).filter(
+          (elm) => !elm.parentElement || !elm.parentElement.closest(P.google_ai_mode.bot_msg)
+        );
+        let turn_bot_text = "";
+        for (let j = 0; j < top_level_bot_elms.length; j++) {
+          turn_bot_text += top_level_bot_elms[j].textContent;
+        }
+        new_user_msgs.push(user_elm.textContent);
+        new_bot_msgs.push(turn_bot_text);
+      }
+      if (new_user_msgs.length > 0) {
+        queryAndUpdateRating(new_bot_msgs.length).then((new_ratings) => {
+          checkInConversation(new_bot_msgs, new_user_msgs, new_ratings);
+        });
+      }
+      return;
+    }
+
+    // Fallback: turn containers not found - use the global query
     queryAndUpdateConversations(
-        P.google_ai_mode.user_msg,
-        P.google_ai_mode.bot_msg,
+        P.google_ai_mode.user_msg_fallback,
+        P.google_ai_mode.bot_msg_fallback,
         sub_user_selector="",sub_bot_selector="", model="google_ai_mode"
     );
   }
