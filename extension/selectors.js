@@ -90,8 +90,14 @@ var SHARELM_SELECTORS = {
       name: "Google AI Mode",
       url_pattern: "google.",
       detection: "div[data-xid=\"aim-mars-turn-root\"], div[data-xid=\"aim-mars-input-plate\"]",
-      user_msg: "div[data-xid=\"aim-mars-turn-root\"] span[jsname=\"y5v2y\"], div[data-xid=\"aim-mars-turn-root\"] .sUKAcb, [data-scope-id=\"turn\"] [data-xid*=\"user\"]",
-      bot_msg: "div[data-xid=\"aim-mars-turn-root\"] [data-scope-id=\"turn\"] [data-subtree=\"aimc\"], div[data-xid=\"aim-mars-turn-root\"] [data-subtree=\"aimc\"]"
+      // Turn containers are iterated individually; user/bot messages are queried inside each turn
+      // (a global query made the first user question repeat across all turns)
+      turn_container: "div[data-xid=\"aim-mars-turn-root\"]",
+      user_msg: "span[role=\"heading\"], span[jsname=\"y5v2y\"], .sUKAcb, [data-scope-id=\"turn\"] [data-xid*=\"user\"]",
+      bot_msg: "div[data-streaming-container], [data-subtree=\"aimc\"]",
+      // Fallback: used only when no turn containers are found (global query)
+      user_msg_fallback: "div[data-xid=\"aim-mars-turn-root\"] span[jsname=\"y5v2y\"], div[data-xid=\"aim-mars-turn-root\"] .sUKAcb, [data-scope-id=\"turn\"] [data-xid*=\"user\"]",
+      bot_msg_fallback: "div[data-xid=\"aim-mars-turn-root\"] [data-scope-id=\"turn\"] [data-subtree=\"aimc\"], div[data-xid=\"aim-mars-turn-root\"] [data-subtree=\"aimc\"]"
     },
     perplexity: {
       name: "Perplexity",
